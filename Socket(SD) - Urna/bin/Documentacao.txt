@@ -1,0 +1,66 @@
+Olá, seja bem-vindo(a)! 
+
+Este serviço que será disponibilizado é uma urna eletrônica, mas para usá-lo você precisará de uma IDE que rode a linguagem Java.
+Ao seguir será disponibilizado um código que você usará para executar este serviço, você irá copiar e colar o código em sua IDE. 
+O IP da máquina é 10.1.6.97 você deve colocar no lugar de "localhost" para a conexão e a porta para o código é 5555. Após realizar
+as alterações, execute o código. Segue o código abaixo:
+
+
+package SocketCliente;
+
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import javax.swing.JOptionPane;
+
+public class Principal {
+    public static void main(String[] args) {
+        System.out.println("Estabelecendo conexao");
+        try {
+            Socket socket = new Socket("localhost", 5555);
+            System.out.println("Conexao estabelecida");
+            ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+            ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+
+            String nome = JOptionPane.showInputDialog("Digite seu nome: ");
+            output.writeUTF(nome);
+            // output.writeUTF(msg);
+            output.flush();
+            String msgNome = input.readUTF();
+            JOptionPane.showMessageDialog(null, msgNome);
+
+            String idade = JOptionPane.showInputDialog("Digite sua idade: ");
+            output.writeUTF(idade);
+            output.flush();
+            String msgIdade = input.readUTF();
+            JOptionPane.showMessageDialog(null, msgIdade);
+
+            String titulo = JOptionPane.showInputDialog("Voce possui titulo de eleitor? (Sim/Nao)");
+            output.writeUTF(titulo);
+            output.flush();
+            String msgconfTitulo = input.readUTF();
+            JOptionPane.showMessageDialog(null, msgconfTitulo);
+
+            String candidatos = JOptionPane.showInputDialog("Lista de candidatos: \n" + "Candidato Alexandre Vote 1 \n"
+                    + "Candidato Jose Vote 2 \n" + "Candidato Gabriel Vote 3 \n" + "Candidato Amanda Vote 4 \n"
+                    + "Candidato Kelly Vote 5 \n" + "\n" + "(1/2/3/4/5)  Digite seu voto: ");
+            output.writeUTF(candidatos);
+            output.flush();
+            String msgVoto = input.readUTF();
+            JOptionPane.showMessageDialog(null, msgVoto);
+
+            String confVoto = JOptionPane
+                    .showInputDialog("(1/2/3/4/5)  Digite novamente seu voto apenas para confirma-lo: ");
+            output.writeUTF(confVoto);
+            output.flush();
+            String msgConfVoto = input.readUTF();
+            JOptionPane.showMessageDialog(null, msgConfVoto);
+            input.close();
+            output.close();
+            socket.close();
+        } catch (Exception e) {
+            System.out.println("Erro no cliente " + e);
+        }
+
+    }
+}
